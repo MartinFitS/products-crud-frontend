@@ -1,0 +1,24 @@
+<header class="page-header">
+  <div><p class="eyebrow">Perfiles</p><h1>Detalle del perfil</h1><p>Configuración y secciones autorizadas.</p></div>
+  <div class="header-actions"><a nz-button routerLink="/profiles">Volver</a>@if (profile) { <a nz-button nzType="primary" [routerLink]="['/profiles', profile.id, 'edit']">Editar</a> }</div>
+</header>
+
+<nz-spin [nzSpinning]="isLoading" nzTip="Cargando perfil...">
+  @if (loadError) {
+    <nz-result nzStatus="error" nzTitle="No se pudo cargar el perfil" [nzSubTitle]="loadError">
+      <div nz-result-extra><button nz-button nzType="primary" type="button" (click)="loadProfile()">Reintentar</button></div>
+    </nz-result>
+  } @else if (profile) {
+    <section class="profile-summary"><div class="profile-mark">{{ profile.name.charAt(0).toUpperCase() }}</div><div><h2>{{ profile.name }}</h2><strong>{{ profile.code }}</strong></div></section>
+    <nz-descriptions nzTitle="Información del perfil" nzBordered [nzColumn]="{ xs: 1, sm: 1, md: 2, lg: 2, xl: 2, xxl: 2 }">
+      <nz-descriptions-item nzTitle="Nombre">{{ profile.name }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Código">{{ profile.code }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Creado">{{ profile.created_at ? (profile.created_at | date:'dd/MM/yyyy HH:mm') : '—' }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Actualizado">{{ profile.updated_at ? (profile.updated_at | date:'dd/MM/yyyy HH:mm') : '—' }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Secciones" [nzSpan]="2">
+        @for (section of profile.sections; track section) { <nz-tag nzColor="blue">{{ section }}</nz-tag> }
+      </nz-descriptions-item>
+    </nz-descriptions>
+    <div class="danger-zone"><div><strong>Eliminar perfil</strong><p>Solo puede eliminarse si ningún usuario lo tiene asignado.</p></div><button nz-button nzDanger type="button" [nzLoading]="isDeleting" (click)="confirmDelete()">Eliminar perfil</button></div>
+  }
+</nz-spin>

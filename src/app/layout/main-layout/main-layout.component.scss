@@ -1,0 +1,24 @@
+:host { display: block; }
+.app-layout { min-height: 100vh; }
+.menu-sidebar { position: relative; z-index: 10; min-height: 100vh; box-shadow: 2px 0 10px rgba(0, 21, 41, .24); }
+.sidebar-logo { display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 20px; overflow: hidden; color: #fff; background: #001529; white-space: nowrap; }
+.logo-mark { display: inline-grid; flex: 0 0 34px; height: 34px; place-items: center; border-radius: 9px; color: #001529; background: #fff; font-weight: 800; }
+.logo-name { font-size: 16px; font-weight: 600; }
+nz-header { z-index: 2; width: 100%; padding: 0; }
+.app-header { display: flex; align-items: center; justify-content: space-between; height: 64px; padding-right: 18px; background: #fff; box-shadow: 0 1px 4px rgba(0, 21, 41, .08); }
+.header-trigger { height: 64px; padding: 0 24px; border: 0; color: inherit; background: transparent; font-size: 20px; cursor: pointer; }
+.header-trigger:hover { color: #1677ff; }
+.user-area { display: flex; align-items: center; gap: 16px; }
+.user-copy { display: flex; flex-direction: column; align-items: flex-end; max-width: 250px; line-height: 1.25; }
+.user-copy strong, .user-copy span { overflow: hidden; max-width: 100%; text-overflow: ellipsis; white-space: nowrap; }
+.user-copy span { color: #8c8c8c; font-size: 12px; }
+nz-content { margin: 24px; }
+.inner-content { min-height: calc(100vh - 112px); padding: 28px; border-radius: 10px; background: #fff; }
+@media (max-width: 575px) {
+  nz-content { margin: 12px; }
+  .inner-content { min-height: calc(100vh - 88px); padding: 18px; }
+  .user-copy span { display: none; }
+  .user-copy { max-width: 110px; }
+  .user-area { gap: 4px; }
+  .header-trigger { padding: 0 16px; }
+}

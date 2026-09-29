@@ -1,0 +1,52 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Perfiles</p>
+    <h1>{{ isEdit ? 'Editar perfil' : 'Crear perfil' }}</h1>
+    <p>Asigna las secciones que estarán disponibles para los usuarios de este perfil.</p>
+  </div>
+  <a nz-button routerLink="/profiles">Volver al listado</a>
+</header>
+
+<nz-spin [nzSpinning]="isLoading" nzTip="Cargando información...">
+  <nz-card class="form-card">
+    @if (loadError) {
+      <nz-alert nzType="error" nzShowIcon [nzMessage]="loadError"></nz-alert>
+    }
+    <form nz-form nzLayout="vertical" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="name">Nombre del perfil</nz-form-label>
+        <nz-form-control [nzErrorTip]="nameError">
+          <input nz-input id="name" formControlName="name" maxlength="150" placeholder="Por ejemplo, Supervisor de productos" />
+          <ng-template #nameError>{{ fieldServerError('name') || 'Ingresa un nombre de máximo 150 caracteres.' }}</ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="sections">Secciones permitidas</nz-form-label>
+        <nz-form-control [nzErrorTip]="sectionsError" nzExtra="Selecciona entre 1 y 20 secciones.">
+          <nz-select id="sections" nzMode="multiple" nzPlaceHolder="Selecciona las secciones" formControlName="sections">
+            @for (section of sections; track section.id) {
+              <nz-option [nzValue]="section.slug" [nzLabel]="section.name + ' (' + section.slug + ')' "></nz-option>
+            }
+          </nz-select>
+          <ng-template #sectionsError>{{ fieldServerError('sections') || 'Selecciona al menos una sección.' }}</ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <div class="section-preview">
+        <strong>Permisos seleccionados</strong>
+        <div>
+          @for (section of form.controls.sections.value; track section) { <nz-tag nzColor="blue">{{ section }}</nz-tag> }
+          @if (!form.controls.sections.value.length) { <span>Sin secciones seleccionadas</span> }
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <a nz-button routerLink="/profiles">Cancelar</a>
+        <button nz-button nzType="primary" type="submit" [nzLoading]="isSubmitting" [disabled]="isSubmitting || isLoading || !!loadError">
+          {{ isEdit ? 'Guardar cambios' : 'Crear perfil' }}
+        </button>
+      </div>
+    </form>
+  </nz-card>
+</nz-spin>

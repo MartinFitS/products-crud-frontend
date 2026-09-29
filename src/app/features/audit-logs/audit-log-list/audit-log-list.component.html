@@ -1,0 +1,17 @@
+<header class="page-header">
+  <div><p class="eyebrow">Seguridad y trazabilidad</p><h1>Bitácora</h1><p>Consulta quién realizó cada cambio y revisa los valores anteriores y nuevos.</p></div>
+  <div class="header-actions"><button nz-button type="button" [nzLoading]="exportLoading === 'pdf'" [disabled]="!!exportLoading" (click)="download('pdf')">Exportar PDF</button><button nz-button type="button" [nzLoading]="exportLoading === 'excel'" [disabled]="!!exportLoading" (click)="download('excel')">Exportar Excel</button></div>
+</header>
+
+<form class="filters" [formGroup]="filters" (ngSubmit)="search()">
+  <input nz-input formControlName="search" placeholder="Usuario, correo, código o registro" aria-label="Buscar en bitácora" />
+  <nz-select formControlName="action" aria-label="Filtrar por acción"><nz-option nzValue="" nzLabel="Todas las acciones"></nz-option><nz-option nzValue="created" nzLabel="Creación"></nz-option><nz-option nzValue="updated" nzLabel="Actualización"></nz-option><nz-option nzValue="status_updated" nzLabel="Cambio de estado"></nz-option><nz-option nzValue="deleted" nzLabel="Eliminación"></nz-option></nz-select>
+  <nz-select formControlName="auditable_type" aria-label="Filtrar por entidad"><nz-option nzValue="" nzLabel="Todas las entidades"></nz-option><nz-option nzValue="product" nzLabel="Productos"></nz-option><nz-option nzValue="user" nzLabel="Usuarios"></nz-option><nz-option nzValue="profile" nzLabel="Perfiles"></nz-option></nz-select>
+  <label>Desde<input nz-input type="date" formControlName="date_from" /></label><label>Hasta<input nz-input type="date" formControlName="date_to" /></label>
+  <button nz-button nzType="primary" type="submit">Buscar</button><button nz-button type="button" (click)="clearFilters()">Limpiar</button>
+</form>
+
+<nz-table [nzData]="entries" [nzLoading]="isLoading()" [nzFrontPagination]="false" [nzTotal]="total" [nzPageIndex]="page" [nzPageSize]="limit" [nzShowPagination]="total > limit" [nzShowSizeChanger]="true" [nzPageSizeOptions]="[10, 20, 50, 100]" [nzScroll]="{ x: '1150px' }" (nzPageIndexChange)="pageChanged($event)" (nzPageSizeChange)="pageSizeChanged($event)">
+  <thead><tr><th nzWidth="175px">Fecha</th><th nzWidth="245px">Responsable</th><th nzWidth="175px">Acción</th><th nzWidth="130px">Entidad</th><th nzWidth="320px">Registro afectado</th><th nzRight nzWidth="100px">Detalle</th></tr></thead>
+  <tbody>@for (entry of entries; track entry.id) {<tr><td>{{ entry.created_at ? (entry.created_at | date:'dd/MM/yyyy HH:mm:ss') : '—' }}</td><td><div class="actor"><strong>{{ entry.actor?.name || 'Usuario eliminado' }}</strong><span>{{ entry.actor?.email || 'Sin información disponible' }}</span></div></td><td><nz-tag [nzColor]="actionColor(entry.action)">{{ actionLabel(entry.action) }}</nz-tag></td><td>{{ typeLabel(entry.auditable_type) }}</td><td class="target">{{ targetLabel(entry) }}</td><td nzRight><a nz-button nzType="link" [routerLink]="['/audit-logs', entry.id]">Ver</a></td></tr>}</tbody>
+</nz-table>

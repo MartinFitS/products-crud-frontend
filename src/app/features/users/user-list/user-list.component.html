@@ -1,0 +1,76 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Administración</p>
+    <h1>Usuarios</h1>
+    <p>Gestiona accesos, perfiles y estado de las cuentas.</p>
+  </div>
+  <div class="header-actions">
+    <button nz-button type="button" [nzLoading]="exportLoading === 'pdf'" [disabled]="!!exportLoading" (click)="download('pdf')">Exportar PDF</button>
+    <button nz-button type="button" [nzLoading]="exportLoading === 'excel'" [disabled]="!!exportLoading" (click)="download('excel')">Exportar Excel</button>
+    <a nz-button nzType="primary" routerLink="/users/new">Registrar usuario</a>
+  </div>
+</header>
+
+<form class="filters" [formGroup]="filters" (ngSubmit)="search()">
+  <input nz-input formControlName="search" placeholder="Buscar por código, nombre o correo" aria-label="Buscar usuarios" />
+  <nz-select formControlName="status" aria-label="Filtrar por estado" [nzOptions]="statusOptions"></nz-select>
+  <button nz-button nzType="primary" type="submit">Buscar</button>
+  <button nz-button type="button" (click)="clearFilters()">Limpiar</button>
+</form>
+
+<nz-table
+  [nzData]="users"
+  [nzLoading]="isLoading()"
+  [nzFrontPagination]="false"
+  [nzTotal]="total"
+  [nzPageIndex]="page"
+  [nzPageSize]="limit"
+  [nzShowPagination]="total > limit"
+  [nzShowSizeChanger]="true"
+  [nzPageSizeOptions]="[10, 20, 50, 100]"
+  [nzScroll]="{ x: '1050px' }"
+  (nzPageIndexChange)="pageChanged($event)"
+  (nzPageSizeChange)="pageSizeChanged($event)">
+  <thead>
+    <tr>
+      <th nzWidth="100px">Código</th>
+      <th nzWidth="250px">Usuario</th>
+      <th nzWidth="170px">Teléfono</th>
+      <th nzWidth="220px">Perfiles</th>
+      <th nzWidth="110px">Estado</th>
+      <th nzWidth="140px">Registro</th>
+      <th nzRight nzWidth="250px">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (user of users; track user.id) {
+      <tr>
+        <td><strong>{{ user.code }}</strong></td>
+        <td>
+          <div class="user-cell">
+            <nz-avatar [nzSrc]="photoUrl(user)" [nzText]="initials(user)"></nz-avatar>
+            <div><strong>{{ user.name }}</strong><span>{{ user.email }}</span></div>
+          </div>
+        </td>
+        <td>{{ user.phone || '—' }}</td>
+        <td>
+          @for (profile of user.profiles; track profile.id) { <nz-tag>{{ profile.name }}</nz-tag> }
+          @if (!user.profiles.length && user.profile_ids.length) { <span>{{ user.profile_ids.length }} asignado(s)</span> }
+          @if (!user.profile_ids.length) { <span class="muted">Sin perfiles</span> }
+        </td>
+        <td><nz-tag [nzColor]="user.is_active ? 'success' : 'default'">{{ user.is_active ? 'Activo' : 'Inactivo' }}</nz-tag></td>
+        <td>{{ user.created_at ? (user.created_at | date:'dd/MM/yyyy') : '—' }}</td>
+        <td nzRight>
+          <div class="row-actions">
+            <a nz-button nzType="link" [routerLink]="['/users', user.id]">Ver</a>
+            <a nz-button nzType="link" [routerLink]="['/users', user.id, 'edit']">Editar</a>
+            <button nz-button nzType="link" type="button" [nzLoading]="statusLoadingId === user.id" (click)="confirmStatus(user)">
+              {{ user.is_active ? 'Desactivar' : 'Activar' }}
+            </button>
+            <button nz-button nzType="link" nzDanger type="button" [nzLoading]="deletingId === user.id" (click)="confirmDelete(user)">Eliminar</button>
+          </div>
+        </td>
+      </tr>
+    }
+  </tbody>
+</nz-table>

@@ -1,0 +1,62 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Control de acceso</p>
+    <h1>Perfiles</h1>
+    <p>Define agrupaciones de permisos mediante las secciones disponibles.</p>
+  </div>
+  <div class="header-actions">
+    <button nz-button type="button" [nzLoading]="exportLoading === 'pdf'" [disabled]="!!exportLoading" (click)="download('pdf')">Exportar PDF</button>
+    <button nz-button type="button" [nzLoading]="exportLoading === 'excel'" [disabled]="!!exportLoading" (click)="download('excel')">Exportar Excel</button>
+    <a nz-button routerLink="/profiles/sections">Administrar secciones</a>
+    <a nz-button nzType="primary" routerLink="/profiles/new">Crear perfil</a>
+  </div>
+</header>
+
+<form class="filters" [formGroup]="filters" (ngSubmit)="search()">
+  <input nz-input formControlName="search" placeholder="Buscar por código o nombre" aria-label="Buscar perfiles" />
+  <button nz-button nzType="primary" type="submit">Buscar</button>
+  <button nz-button type="button" (click)="clearSearch()">Limpiar</button>
+</form>
+
+<nz-table
+  [nzData]="profiles"
+  [nzLoading]="isLoading()"
+  [nzFrontPagination]="false"
+  [nzTotal]="total"
+  [nzPageIndex]="page"
+  [nzPageSize]="limit"
+  [nzShowPagination]="total > limit"
+  [nzShowSizeChanger]="true"
+  [nzPageSizeOptions]="[10, 20, 50, 100]"
+  [nzScroll]="{ x: '850px' }"
+  (nzPageIndexChange)="pageChanged($event)"
+  (nzPageSizeChange)="pageSizeChanged($event)">
+  <thead>
+    <tr>
+      <th nzWidth="140px">Código</th>
+      <th nzWidth="260px">Nombre</th>
+      <th nzWidth="330px">Secciones</th>
+      <th nzWidth="150px">Creado</th>
+      <th nzRight nzWidth="210px">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (profile of profiles; track profile.id) {
+      <tr>
+        <td><strong>{{ profile.code }}</strong></td>
+        <td>{{ profile.name }}</td>
+        <td>
+          @for (section of profile.sections; track section) { <nz-tag nzColor="blue">{{ section }}</nz-tag> }
+        </td>
+        <td>{{ profile.created_at ? (profile.created_at | date:'dd/MM/yyyy') : '—' }}</td>
+        <td nzRight>
+          <div class="row-actions">
+            <a nz-button nzType="link" [routerLink]="['/profiles', profile.id]">Ver</a>
+            <a nz-button nzType="link" [routerLink]="['/profiles', profile.id, 'edit']">Editar</a>
+            <button nz-button nzType="link" nzDanger type="button" [nzLoading]="deletingId === profile.id" (click)="confirmDelete(profile)">Eliminar</button>
+          </div>
+        </td>
+      </tr>
+    }
+  </tbody>
+</nz-table>

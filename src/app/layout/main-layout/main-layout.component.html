@@ -1,0 +1,46 @@
+<nz-layout class="app-layout">
+  <nz-sider class="menu-sidebar" nzCollapsible nzWidth="248px" nzBreakpoint="lg" [nzCollapsedWidth]="0"
+    [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
+    <a class="sidebar-logo" [routerLink]="auth.getDefaultRouteForUser()">
+      <span class="logo-mark">Inv</span>
+      <span class="logo-name">Inventario</span>
+    </a>
+
+    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+      @if (auth.hasSection('products')) {
+        <li nz-menu-item nzMatchRouter><a routerLink="/products">Productos</a></li>
+      }
+      @if (auth.hasSection('users')) {
+        <li nz-menu-item nzMatchRouter><a routerLink="/users">Usuarios</a></li>
+      }
+      @if (auth.hasSection('profiles')) {
+        <li nz-menu-item nzMatchRouter><a routerLink="/profiles">Perfiles</a></li>
+      }
+      @if (auth.hasSection('audit-logs')) {
+        <li nz-menu-item nzMatchRouter><a routerLink="/audit-logs">Bitácora</a></li>
+      }
+    </ul>
+  </nz-sider>
+
+  <nz-layout>
+    <nz-header>
+      <div class="app-header">
+        <button class="header-trigger" type="button" (click)="isCollapsed = !isCollapsed" aria-label="Mostrar u ocultar menú">
+          <nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" />
+        </button>
+        <div class="user-area">
+          <div class="user-copy">
+            <strong>{{ auth.currentUser()?.name }}</strong>
+            <span>{{ auth.currentUser()?.email }}</span>
+          </div>
+          <button nz-button nzType="text" type="button" [nzLoading]="isLoggingOut" [disabled]="isLoggingOut" (click)="logout()">
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </nz-header>
+    <nz-content>
+      <div class="inner-content"><router-outlet></router-outlet></div>
+    </nz-content>
+  </nz-layout>
+</nz-layout>

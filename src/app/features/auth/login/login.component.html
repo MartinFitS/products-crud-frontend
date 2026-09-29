@@ -1,0 +1,42 @@
+<main class="auth-page">
+  <nz-card class="auth-card" [nzBordered]="false">
+    <div class="auth-brand" aria-hidden="true">TA</div>
+    <div class="auth-heading">
+      <p class="auth-eyebrow">Inventario</p>
+      <h1>Bienvenido</h1>
+      <p>Ingresa tus credenciales para continuar.</p>
+    </div>
+
+    @if (errorMessage) {
+      <nz-alert nzType="error" [nzMessage]="errorMessage" nzShowIcon></nz-alert>
+    }
+
+    <form nz-form nzLayout="vertical" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="email">Correo electrónico</nz-form-label>
+        <nz-form-control [nzErrorTip]="emailError">
+          <input nz-input id="email" type="email" formControlName="email" autocomplete="email" placeholder="nombre@empresa.com" />
+          <ng-template #emailError>
+            @if (form.controls.email.hasError('required')) { Ingresa tu correo electrónico. }
+            @else { Ingresa un correo electrónico válido. }
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="password">Contraseña</nz-form-label>
+        <nz-form-control nzErrorTip="Ingresa tu contraseña.">
+          <input nz-input id="password" type="password" formControlName="password" autocomplete="current-password" placeholder="Tu contraseña" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <div class="auth-actions-inline">
+        <a routerLink="/forgot-password">¿Olvidaste tu contraseña?</a>
+      </div>
+
+      <button nz-button nzType="primary" nzBlock nzSize="large" type="submit" [nzLoading]="isSubmitting" [disabled]="isSubmitting">
+        Iniciar sesión
+      </button>
+    </form>
+  </nz-card>
+</main>

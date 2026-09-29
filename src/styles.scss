@@ -1,1 +1,29 @@
-/* You can add global styles to this file, and also import other style files */
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body { margin: 0; color: #172033; background: #f5f7fb; }
+
+.auth-page {
+  display: grid;
+  min-height: 100vh;
+  padding: 32px 20px;
+  place-items: center;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(22, 119, 255, .16), transparent 34%),
+    radial-gradient(circle at 90% 85%, rgba(82, 196, 26, .10), transparent 28%),
+    #f5f7fb;
+}
+.auth-card { width: min(100%, 440px); border-radius: 16px; box-shadow: 0 18px 60px rgba(0, 21, 41, .12); }
+.auth-card .ant-card-body { padding: 36px; }
+.auth-brand { display: grid; width: 48px; height: 48px; margin-bottom: 24px; place-items: center; border-radius: 13px; color: #fff; background: #1677ff; font-size: 18px; font-weight: 800; box-shadow: 0 8px 22px rgba(22, 119, 255, .28); }
+.auth-heading { margin-bottom: 24px; }
+.auth-heading h1 { margin: 0 0 8px; color: #172033; font-size: 30px; line-height: 1.2; }
+.auth-heading > p:last-child { margin: 0; color: #6b7280; }
+.auth-eyebrow { margin: 0 0 6px; color: #1677ff; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.auth-card nz-alert { display: block; margin-bottom: 20px; }
+.auth-actions-inline { display: flex; justify-content: flex-end; margin: -6px 0 20px; }
+.auth-back-link { display: block; margin-top: 20px; text-align: center; }
+@media (max-width: 480px) {
+  .auth-page { padding: 16px; }
+  .auth-card .ant-card-body { padding: 26px 22px; }
+  .auth-heading h1 { font-size: 26px; }
+}

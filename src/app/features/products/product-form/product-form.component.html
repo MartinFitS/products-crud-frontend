@@ -1,0 +1,23 @@
+<header class="page-header">
+  <div><p class="eyebrow">Productos</p><h1>{{ isEdit ? 'Editar producto' : 'Registrar producto' }}</h1><p>{{ isEdit ? 'Actualiza la información del artículo. La fotografía es opcional.' : 'Agrega un artículo nuevo al catálogo.' }}</p></div>
+  <a nz-button routerLink="/products">Volver al listado</a>
+</header>
+
+<nz-spin [nzSpinning]="isLoading" nzTip="Cargando información...">
+  <nz-card class="form-card" [nzBordered]="true">
+    <form nz-form nzLayout="vertical" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <section class="photo-section">
+        <nz-avatar nzShape="square" [nzSize]="104" [nzSrc]="photoPreview" nzText="Foto"></nz-avatar>
+        <div><label class="file-label" for="product-photo">{{ isEdit ? 'Cambiar fotografía' : 'Fotografía del producto' }}</label><input id="product-photo" type="file" accept="image/jpeg,image/png,image/webp" (change)="selectPhoto($event)" /><small>Opcional. JPEG, PNG o WEBP; máximo 5 MB.</small>@if (photoError) { <span class="field-error">{{ photoError }}</span> }</div>
+      </section>
+
+      <div class="form-grid">
+        <nz-form-item><nz-form-label nzRequired nzFor="name">Nombre</nz-form-label><nz-form-control [nzErrorTip]="nameError"><input nz-input id="name" formControlName="name" maxlength="150" autocomplete="off" /><ng-template #nameError>{{ fieldServerError('name') || 'Ingresa el nombre del producto (máximo 150 caracteres).' }}</ng-template></nz-form-control></nz-form-item>
+        <nz-form-item><nz-form-label nzRequired nzFor="brand">Marca</nz-form-label><nz-form-control [nzErrorTip]="brandError"><input nz-input id="brand" formControlName="brand" maxlength="150" autocomplete="off" /><ng-template #brandError>{{ fieldServerError('brand') || 'Ingresa la marca del producto (máximo 150 caracteres).' }}</ng-template></nz-form-control></nz-form-item>
+        <nz-form-item><nz-form-label nzRequired nzFor="price">Precio</nz-form-label><nz-form-control [nzErrorTip]="priceError"><nz-input-group nzAddOnBefore="$"><input nz-input id="price" type="number" formControlName="price" min="0" max="999.99" step="0.01" inputmode="decimal" /></nz-input-group><ng-template #priceError>{{ fieldServerError('price') || 'Ingresa un precio entre 0 y 999.99 con máximo dos decimales.' }}</ng-template></nz-form-control></nz-form-item>
+      </div>
+
+      <div class="form-actions"><a nz-button routerLink="/products">Cancelar</a><button nz-button nzType="primary" type="submit" [nzLoading]="isSubmitting" [disabled]="isSubmitting || isLoading">{{ isEdit ? 'Guardar cambios' : 'Registrar producto' }}</button></div>
+    </form>
+  </nz-card>
+</nz-spin>

@@ -1,0 +1,91 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Usuarios</p>
+    <h1>{{ isEdit ? 'Editar usuario' : 'Registrar usuario' }}</h1>
+    <p>{{ isEdit ? 'Actualiza los datos de la cuenta. La contraseña y foto son opcionales.' : 'Crea una cuenta y asigna sus perfiles de acceso.' }}</p>
+  </div>
+  <a nz-button routerLink="/users">Volver al listado</a>
+</header>
+
+<nz-spin [nzSpinning]="isLoading" nzTip="Cargando información...">
+  <nz-card class="form-card" [nzBordered]="true">
+    @if (profilesUnavailable) {
+      <nz-alert nzType="info" nzShowIcon
+        nzMessage="Perfiles no disponibles"
+        nzDescription="Tu cuenta no tiene acceso a la sección Profiles. Puedes guardar el usuario sin perfiles; al editar se conservarán las asignaciones existentes." />
+    }
+
+    <form nz-form nzLayout="vertical" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <section class="photo-section">
+        <nz-avatar [nzSize]="88" [nzSrc]="photoPreview" nzText="Foto"></nz-avatar>
+        <div>
+          <label class="file-label" for="user-photo">{{ isEdit ? 'Cambiar fotografía' : 'Fotografía de perfil *' }}</label>
+          <input id="user-photo" type="file" accept="image/jpeg,image/png,image/webp" (change)="selectPhoto($event)" />
+          <small>JPEG, PNG o WEBP. Máximo 5 MB.</small>
+          @if (photoError) { <span class="field-error">{{ photoError }}</span> }
+          @if (fieldServerError('photo')) { <span class="field-error">{{ fieldServerError('photo') }}</span> }
+        </div>
+      </section>
+
+      <div class="form-grid">
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="name">Nombre completo</nz-form-label>
+          <nz-form-control [nzErrorTip]="nameError">
+            <input nz-input id="name" formControlName="name" autocomplete="name" maxlength="150" />
+            <ng-template #nameError>{{ fieldServerError('name') || 'Ingresa el nombre del usuario.' }}</ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="email">Correo electrónico</nz-form-label>
+          <nz-form-control [nzErrorTip]="emailError">
+            <input nz-input id="email" type="email" formControlName="email" autocomplete="email" maxlength="254" />
+            <ng-template #emailError>{{ fieldServerError('email') || 'Ingresa un correo electrónico válido.' }}</ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzFor="phone">Teléfono</nz-form-label>
+          <nz-form-control [nzErrorTip]="phoneError">
+            <input nz-input id="phone" formControlName="phone" autocomplete="tel" placeholder="+521234567890" />
+            <ng-template #phoneError>{{ fieldServerError('phone') || 'Usa formato internacional E.164, por ejemplo +521234567890.' }}</ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzFor="profiles">Perfiles</nz-form-label>
+          <nz-form-control [nzErrorTip]="fieldServerError('profile_ids') || ''">
+            <nz-select id="profiles" nzMode="multiple" nzPlaceHolder="Selecciona perfiles" formControlName="profile_ids" [nzDisabled]="profilesUnavailable">
+              @for (profile of profiles; track profile.id) {
+                <nz-option [nzValue]="profile.id" [nzLabel]="profile.name + ' (' + profile.code + ')' "></nz-option>
+              }
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzRequired]="!isEdit" nzFor="password">{{ isEdit ? 'Nueva contraseña' : 'Contraseña' }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="passwordError">
+            <input nz-input id="password" type="password" formControlName="password" autocomplete="new-password" />
+            <ng-template #passwordError>{{ fieldServerError('password') || 'Mínimo 8 caracteres, con mayúscula, minúscula, número y símbolo.' }}</ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzRequired]="!isEdit" nzFor="password_confirmation">Confirmar contraseña</nz-form-label>
+          <nz-form-control [nzValidateStatus]="form.hasError('passwordMismatch') ? 'error' : ''" [nzErrorTip]="confirmationError">
+            <input nz-input id="password_confirmation" type="password" formControlName="password_confirmation" autocomplete="new-password" />
+            <ng-template #confirmationError>{{ fieldServerError('password_confirmation') || 'Las contraseñas deben coincidir.' }}</ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="form-actions">
+        <a nz-button routerLink="/users">Cancelar</a>
+        <button nz-button nzType="primary" type="submit" [nzLoading]="isSubmitting" [disabled]="isSubmitting || isLoading">
+          {{ isEdit ? 'Guardar cambios' : 'Registrar usuario' }}
+        </button>
+      </div>
+    </form>
+  </nz-card>
+</nz-spin>

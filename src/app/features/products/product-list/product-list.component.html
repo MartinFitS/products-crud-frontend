@@ -1,0 +1,31 @@
+<header class="page-header">
+  <div><p class="eyebrow">Catálogo</p><h1>Productos</h1><p>Administra artículos, marcas, precios e imágenes del catálogo.</p></div>
+  <div class="header-actions">
+    <button nz-button type="button" [nzLoading]="exportLoading === 'pdf'" [disabled]="!!exportLoading" (click)="download('pdf')">Exportar PDF</button>
+    <button nz-button type="button" [nzLoading]="exportLoading === 'excel'" [disabled]="!!exportLoading" (click)="download('excel')">Exportar Excel</button>
+    <a nz-button nzType="primary" routerLink="/products/new">Registrar producto</a>
+  </div>
+</header>
+
+<form class="filters" [formGroup]="filters" (ngSubmit)="search()">
+  <input nz-input formControlName="search" placeholder="Buscar por código, nombre o marca" aria-label="Buscar productos" />
+  <button nz-button nzType="primary" type="submit">Buscar</button>
+  <button nz-button type="button" (click)="clearSearch()">Limpiar</button>
+</form>
+
+<nz-table [nzData]="products" [nzLoading]="isLoading()" [nzFrontPagination]="false" [nzTotal]="total"
+  [nzPageIndex]="page" [nzPageSize]="limit" [nzShowPagination]="total > limit" [nzShowSizeChanger]="true"
+  [nzPageSizeOptions]="[10, 20, 50, 100]" [nzScroll]="{ x: '1050px' }"
+  (nzPageIndexChange)="pageChanged($event)" (nzPageSizeChange)="pageSizeChanged($event)">
+  <thead><tr><th nzWidth="92px">Foto</th><th nzWidth="145px">Código</th><th nzWidth="250px">Producto</th><th nzWidth="200px">Marca</th><th nzWidth="140px">Precio</th><th nzWidth="145px">Creado</th><th nzRight nzWidth="210px">Acciones</th></tr></thead>
+  <tbody>
+    @for (product of products; track product.id) {
+      <tr>
+        <td><nz-avatar nzShape="square" [nzSize]="48" [nzSrc]="productsApi.photoUrl(product.photo)" [nzText]="product.name.charAt(0).toUpperCase()"></nz-avatar></td>
+        <td><strong>{{ product.code }}</strong></td><td>{{ product.name }}</td><td>{{ product.brand }}</td>
+        <td class="price">$ {{ product.price | number:'1.2-2' }}</td><td>{{ product.created_at ? (product.created_at | date:'dd/MM/yyyy') : '—' }}</td>
+        <td nzRight><div class="row-actions"><a nz-button nzType="link" [routerLink]="['/products', product.id]">Ver</a><a nz-button nzType="link" [routerLink]="['/products', product.id, 'edit']">Editar</a><button nz-button nzType="link" nzDanger type="button" [nzLoading]="deletingId === product.id" (click)="confirmDelete(product)">Eliminar</button></div></td>
+      </tr>
+    }
+  </tbody>
+</nz-table>

@@ -1,0 +1,57 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Usuarios</p>
+    <h1>Detalle del usuario</h1>
+    <p>Información, perfiles y estado de la cuenta.</p>
+  </div>
+  <div class="header-actions">
+    <a nz-button routerLink="/users">Volver</a>
+    @if (user) { <a nz-button nzType="primary" [routerLink]="['/users', user.id, 'edit']">Editar</a> }
+  </div>
+</header>
+
+<nz-spin [nzSpinning]="isLoading" nzTip="Cargando usuario...">
+  @if (loadError) {
+    <nz-result nzStatus="error" nzTitle="No se pudo cargar el usuario" [nzSubTitle]="loadError">
+      <div nz-result-extra><button nz-button nzType="primary" type="button" (click)="loadUser()">Reintentar</button></div>
+    </nz-result>
+  } @else if (user) {
+    <section class="profile-summary">
+      <nz-avatar [nzSize]="92" [nzSrc]="photoUrl()" [nzText]="initials()"></nz-avatar>
+      <div>
+        <div class="name-line"><h2>{{ user.name }}</h2><nz-tag [nzColor]="user.is_active ? 'success' : 'default'">{{ user.is_active ? 'Activo' : 'Inactivo' }}</nz-tag></div>
+        <p>{{ user.email }}</p>
+        <strong>{{ user.code }}</strong>
+      </div>
+    </section>
+
+    <nz-descriptions nzTitle="Información de la cuenta" nzBordered [nzColumn]="{ xs: 1, sm: 1, md: 2, lg: 2, xl: 2, xxl: 2 }">
+      <nz-descriptions-item nzTitle="Nombre">{{ user.name }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Correo">{{ user.email }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Teléfono">{{ user.phone || 'Sin teléfono' }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Código">{{ user.code }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Creado">{{ user.created_at ? (user.created_at | date:'dd/MM/yyyy HH:mm') : '—' }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Actualizado">{{ user.updated_at ? (user.updated_at | date:'dd/MM/yyyy HH:mm') : '—' }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Perfiles" [nzSpan]="2">
+        @for (profile of user.profiles; track profile.id) {
+          <nz-tag nzColor="blue">{{ profile.name }} · {{ profile.code }}</nz-tag>
+        }
+        @if (!user.profiles.length) { <span class="muted">Sin perfiles asignados</span> }
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Secciones" [nzSpan]="2">
+        @for (profile of user.profiles; track profile.id) {
+          @for (section of profile.sections; track section) { <nz-tag>{{ section }}</nz-tag> }
+        }
+        @if (!user.profiles.length) { <span class="muted">Sin secciones disponibles</span> }
+      </nz-descriptions-item>
+    </nz-descriptions>
+
+    <div class="danger-zone">
+      <div><strong>Administrar estado</strong><p>Desactivar revoca todas las sesiones del usuario.</p></div>
+      <div class="danger-actions">
+        <button nz-button type="button" [nzLoading]="actionLoading" (click)="confirmStatus()">{{ user.is_active ? 'Desactivar cuenta' : 'Activar cuenta' }}</button>
+        <button nz-button nzDanger type="button" [nzLoading]="actionLoading" (click)="confirmDelete()">Eliminar usuario</button>
+      </div>
+    </div>
+  }
+</nz-spin>

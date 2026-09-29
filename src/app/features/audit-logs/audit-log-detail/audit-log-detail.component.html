@@ -1,0 +1,22 @@
+<header class="page-header"><div><p class="eyebrow">Bitácora</p><h1>Detalle de actividad</h1><p>Registro inmutable de la operación realizada.</p></div><a nz-button routerLink="/audit-logs">Volver a la bitácora</a></header>
+
+<nz-spin [nzSpinning]="isLoading" nzTip="Cargando actividad...">
+  @if (loadError) {
+    <nz-result nzStatus="error" nzTitle="No se pudo cargar el registro" [nzSubTitle]="loadError"><div nz-result-extra><button nz-button nzType="primary" type="button" (click)="loadEntry()">Reintentar</button></div></nz-result>
+  } @else if (entry) {
+    <section class="activity-summary"><div class="activity-mark">{{ entry.actor?.name?.charAt(0)?.toUpperCase() || '?' }}</div><div><nz-tag [nzColor]="actionColor(entry.action)">{{ actionLabel(entry.action) }}</nz-tag><h2>{{ typeLabel(entry.auditable_type) }}</h2><p>{{ entry.created_at ? (entry.created_at | date:'dd/MM/yyyy HH:mm:ss') : '—' }}</p></div></section>
+
+    <nz-descriptions nzTitle="Datos de la operación" nzBordered [nzColumn]="{ xs: 1, sm: 1, md: 2, lg: 2, xl: 2, xxl: 2 }">
+      <nz-descriptions-item nzTitle="Responsable">{{ entry.actor?.name || 'Usuario eliminado' }}</nz-descriptions-item><nz-descriptions-item nzTitle="Correo">{{ entry.actor?.email || '—' }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Código de usuario">{{ entry.actor?.code || '—' }}</nz-descriptions-item><nz-descriptions-item nzTitle="Entidad">{{ typeLabel(entry.auditable_type) }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="ID del registro" [nzSpan]="2"><code>{{ entry.auditable_id }}</code></nz-descriptions-item>
+    </nz-descriptions>
+
+    <section class="changes"><h3>Valores registrados</h3><p>Comparación exacta almacenada por Laravel al momento de la operación.</p>
+      <nz-table #changesTable [nzData]="changeKeys(entry)" [nzShowPagination]="false" [nzFrontPagination]="false" [nzScroll]="{ x: '720px' }">
+        <thead><tr><th nzWidth="190px">Campo</th><th>Valor anterior</th><th>Valor nuevo</th></tr></thead>
+        <tbody>@for (field of changesTable.data; track field) {<tr><td><strong>{{ fieldLabel(field) }}</strong><small>{{ field }}</small></td><td class="value-cell">{{ formatValue(entry.old_values?.[field]) }}</td><td class="value-cell">{{ formatValue(entry.new_values?.[field]) }}</td></tr>}</tbody>
+      </nz-table>
+    </section>
+  }
+</nz-spin>

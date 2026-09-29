@@ -1,0 +1,31 @@
+<header class="page-header">
+  <div><p class="eyebrow">Perfiles</p><h1>Secciones</h1><p>Administra el catálogo de permisos que puede asignarse a los perfiles.</p></div>
+  <a nz-button routerLink="/profiles">Volver a perfiles</a>
+</header>
+
+<nz-alert nzType="info" nzShowIcon nzMessage="Secciones del sistema" nzDescription="Products, Users y Profiles protegen rutas reales. No pueden eliminarse. Las secciones personalizadas quedan disponibles para futuros módulos o permisos del backend."></nz-alert>
+
+<div class="content-grid">
+  <nz-card nzTitle="Nueva sección" class="create-card">
+    <form nz-form nzLayout="vertical" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <nz-form-item><nz-form-label nzRequired nzFor="section-name">Nombre</nz-form-label><nz-form-control nzErrorTip="Ingresa un nombre de máximo 100 caracteres."><input nz-input id="section-name" formControlName="name" maxlength="100" placeholder="Por ejemplo, Reportes" /></nz-form-control></nz-form-item>
+      <nz-form-item><nz-form-label nzFor="section-slug">Identificador</nz-form-label><nz-form-control nzErrorTip="Usa minúsculas, números y guiones; por ejemplo, sales-reports." nzExtra="Opcional. Si se omite, Laravel lo genera desde el nombre."><input nz-input id="section-slug" formControlName="slug" maxlength="100" placeholder="reportes" /></nz-form-control></nz-form-item>
+      <button nz-button nzType="primary" nzBlock type="submit" [nzLoading]="isSubmitting" [disabled]="isSubmitting">Crear sección</button>
+    </form>
+  </nz-card>
+
+  <nz-card nzTitle="Secciones disponibles" class="sections-card">
+    <nz-table [nzData]="sections" [nzLoading]="isLoading" [nzShowPagination]="false" [nzScroll]="{ x: '620px' }">
+      <thead><tr><th nzWidth="120px">Código</th><th nzWidth="180px">Nombre</th><th nzWidth="170px">Identificador</th><th nzWidth="110px">Tipo</th><th nzRight nzWidth="100px">Acción</th></tr></thead>
+      <tbody>
+        @for (section of sections; track section.id) {
+          <tr>
+            <td><strong>{{ section.code }}</strong></td><td>{{ section.name }}</td><td><code>{{ section.slug }}</code></td>
+            <td><nz-tag [nzColor]="section.is_system ? 'blue' : 'default'">{{ section.is_system ? 'Sistema' : 'Personalizada' }}</nz-tag></td>
+            <td nzRight><button nz-button nzType="link" nzDanger type="button" [disabled]="section.is_system" [nzLoading]="deletingId === section.id" (click)="confirmDelete(section)">Eliminar</button></td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </nz-card>
+</div>
