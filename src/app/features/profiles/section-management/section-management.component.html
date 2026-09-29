@@ -9,7 +9,7 @@
   <nz-card nzTitle="Nueva sección" class="create-card">
     <form nz-form nzLayout="vertical" [formGroup]="form" (ngSubmit)="submit()" novalidate>
       <nz-form-item><nz-form-label nzRequired nzFor="section-name">Nombre</nz-form-label><nz-form-control nzErrorTip="Ingresa un nombre de máximo 100 caracteres."><input nz-input id="section-name" formControlName="name" maxlength="100" placeholder="Por ejemplo, Reportes" /></nz-form-control></nz-form-item>
-      <nz-form-item><nz-form-label nzFor="section-slug">Identificador</nz-form-label><nz-form-control nzErrorTip="Usa minúsculas, números y guiones; por ejemplo, sales-reports." nzExtra="Opcional. Si se omite, Laravel lo genera desde el nombre."><input nz-input id="section-slug" formControlName="slug" maxlength="100" placeholder="reportes" /></nz-form-control></nz-form-item>
+      <nz-form-item><nz-form-label nzFor="section-slug">Identificador</nz-form-label><nz-form-control nzErrorTip="Usa minúsculas, números y guiones; por ejemplo, sales-reports." nzExtra="Opcional. Si se omite se genera desde el nombre."><input nz-input id="section-slug" formControlName="slug" maxlength="100" placeholder="reportes" /></nz-form-control></nz-form-item>
       <button nz-button nzType="primary" nzBlock type="submit" [nzLoading]="isSubmitting" [disabled]="isSubmitting">Crear sección</button>
     </form>
   </nz-card>

@@ -12,7 +12,7 @@
       <nz-descriptions-item nzTitle="ID del registro" [nzSpan]="2"><code>{{ entry.auditable_id }}</code></nz-descriptions-item>
     </nz-descriptions>
 
-    <section class="changes"><h3>Valores registrados</h3><p>Comparación exacta almacenada por Laravel al momento de la operación.</p>
+    <section class="changes"><h3>Valores registrados</h3><p>Comparación de valores al momento de la operación.</p>
       <nz-table #changesTable [nzData]="changeKeys(entry)" [nzShowPagination]="false" [nzFrontPagination]="false" [nzScroll]="{ x: '720px' }">
         <thead><tr><th nzWidth="190px">Campo</th><th>Valor anterior</th><th>Valor nuevo</th></tr></thead>
         <tbody>@for (field of changesTable.data; track field) {<tr><td><strong>{{ fieldLabel(field) }}</strong><small>{{ field }}</small></td><td class="value-cell">{{ formatValue(entry.old_values?.[field]) }}</td><td class="value-cell">{{ formatValue(entry.new_values?.[field]) }}</td></tr>}</tbody>

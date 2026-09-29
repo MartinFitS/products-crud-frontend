@@ -49,7 +49,7 @@ export class ProfileDetailComponent {
     if (!this.profile) return;
     this.modal.confirm({
       nzTitle: 'Eliminar perfil',
-      nzContent: `¿Deseas eliminar ${this.profile.name}? Laravel rechazará la operación si está asignado a usuarios.`,
+      nzContent: `¿Deseas eliminar ${this.profile.name}? se rechazará la operación si está asignado a usuarios.`,
       nzOkText: 'Eliminar',
       nzOkDanger: true,
       nzCancelText: 'Cancelar',

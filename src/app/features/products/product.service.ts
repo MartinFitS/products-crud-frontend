@@ -31,7 +31,6 @@ export class ProductService {
   }
 
   update(id: string, value: ProductFormValue, photo: File | null): Observable<ProductResponse> {
-    // Laravel expone este POST de compatibilidad para aceptar multipart y reemplazar la fotografía.
     return this.http.post<ProductResponse>(`${this.productsUrl}/${id}`, this.toFormData(value, photo));
   }
 
