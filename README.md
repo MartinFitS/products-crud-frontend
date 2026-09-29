@@ -34,6 +34,16 @@ To build the project run:
 ng build
 ```
 
+El build de producción lee `API_URL` y genera el environment utilizado por
+Angular. En Vercel configura, para Production, Preview y Development:
+
+```dotenv
+API_URL=https://products-crud-api-production-5865.up.railway.app/api
+```
+
+`vercel.json` define la carpeta de salida y redirige las rutas de la SPA a
+`index.html`, por lo que las rutas internas también funcionan al recargar.
+
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
 ## Running unit tests
